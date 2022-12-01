@@ -1,5 +1,6 @@
 import { Controller, Post } from '@nestjs/common';
-import { ClientCreateDTO } from '../storage/dto/ClientCreate.dto';
+import { ClientCreateDTO } from 'src/common/storage/dto/client.dto';
+
 
 @Controller('security')
 export class SecurityController {
