@@ -12,6 +12,8 @@ import { AccountEntity } from './storage/databases/postgresql/entities/account.e
 import { ClientEntity } from './storage/databases/postgresql/entities/client.entity';
 import { AppEntity } from './storage/databases/postgresql/entities/app.entity';
 import { MovementEntity } from './storage/databases/postgresql/entities/movement.entity';
+import { TokenVerificationGuard } from 'src/modules/security/guards/token-verification.guard';
+import { SecurityModule } from 'src/modules/security/security.module';
 
 @Module({
   controllers: [
@@ -28,6 +30,7 @@ import { MovementEntity } from './storage/databases/postgresql/entities/movement
       AppEntity,
       MovementEntity,
     ]),
+    SecurityModule,
   ],
 })
 export class CommonModule {}

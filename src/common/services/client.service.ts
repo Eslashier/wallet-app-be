@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import e from 'express';
 import { Repository } from 'typeorm';
 import { ClientEntity } from '../storage/databases/postgresql/entities/client.entity';
 import { CreateClientDto } from '../storage/dto/client/create-client.dto';
@@ -12,18 +11,18 @@ export class ClientService {
     private readonly clientRepository: Repository<ClientEntity>,
   ) {}
 
-  // async getAll(): Promise<ClientEntity[]> {
-  //   const clients = await this.clientRepository.find({
-  //     relations: {
-  //       app: true,
-  //       account: true,
-  //     },
-  //   });
-  //   if (clients.length === 0) {
-  //     throw new NotFoundException('there is no clients to show');
-  //   }
-  //   return clients;
-  // }
+  async getAll(): Promise<ClientEntity[]> {
+    const clients = await this.clientRepository.find({
+      relations: {
+        app: true,
+        account: true,
+      },
+    });
+    if (clients.length === 0) {
+      throw new NotFoundException('there is no clients to show');
+    }
+    return clients;
+  }
 
   // async getAll(): Promise<string> {
   //   const clients = await this.clientRepository.find({});

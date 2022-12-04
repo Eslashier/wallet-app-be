@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
+import { TokenVerificationGuard } from './guards/token-verification.guard';
 
 @Module({
   controllers: [],
-  providers: [],
+  providers: [TokenVerificationGuard],
+  exports: [TokenVerificationGuard],
 })
 export class SecurityModule {}
