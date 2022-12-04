@@ -38,9 +38,7 @@ export class TokenVerificationGuard implements CanActivate {
 
   private async getData(token: string): Promise<boolean> {
     const client = jwksClient({
-      // jwksUri: this.config.get<string>('TOKEN_VERIFIER') || '',
-      jwksUri:
-        'https://dev-0gvplcuj1gtcwray.us.auth0.com/.well-known/jwks.json;',
+      jwksUri: this.config.get<string>('TOKEN_VERIFIER') || '',
     });
 
     const options: VerifyOptions = { algorithms: ['RS256'] };
@@ -53,8 +51,8 @@ export class TokenVerificationGuard implements CanActivate {
 
     return new Promise((resolve) => {
       verify(token, getKey, options, (err: VerifyErrors, decoded: any) => {
-        // console.log('decoded', decoded);
-        // console.log('err', err);
+        console.log('decoded', decoded);
+        console.log('err', err);
         if (err) resolve(false);
         resolve(true);
       });
