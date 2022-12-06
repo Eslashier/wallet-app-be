@@ -24,12 +24,7 @@ export class ClientService {
     return clients;
   }
 
-  // async getAll(): Promise<string> {
-  //   const clients = await this.clientRepository.find({});
-  //   return JSON.parse(JSON.stringify(clients[0], ['id']));
-  // }
-
-  async createClient(client: CreateClientDto): Promise<ClientEntity> {
+  async createClient(client: ClientEntity): Promise<ClientEntity> {
     const newClient = this.clientRepository.create(client);
     await this.clientRepository.save(newClient);
     return newClient;
@@ -61,6 +56,39 @@ export class ClientService {
     } else {
       throw new NotFoundException(
         `The client with the info : ${clientInfo} has been not found`,
+      );
+    }
+  }
+
+  async isRegisteredClient(clientEmail: string): Promise<boolean> {
+    const foundClient = await this.clientRepository.findOne({
+      where: {
+        email: clientEmail,
+      },
+      relations: {
+        app: true,
+        account: true,
+      },
+    });
+    return foundClient ? true : false;
+  }
+
+  async findClient(clientInfo: string): Promise<ClientEntity> {
+    const clientByEmail = await this.clientRepository.findOne({
+      where: {
+        email: clientInfo,
+      },
+      relations: {
+        app: true,
+        account: true,
+      },
+    });
+    if (clientByEmail) {
+      console.log(clientByEmail);
+      return clientByEmail;
+    } else {
+      throw new NotFoundException(
+        `The client with the email : ${clientInfo} has been not found`,
       );
     }
   }

@@ -1,12 +1,4 @@
-import {
-  IsEmail,
-  IsInt,
-  IsNumber,
-  IsString,
-  Length,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsEmail, IsInt, IsString, Length, Max, Min } from 'class-validator';
 
 export class CreateClientDto {
   @IsString({
@@ -24,16 +16,16 @@ export class CreateClientDto {
   })
   email: string;
   @IsInt({
-    message: 'Should be a valid email',
+    message: 'Should be a valid phone',
   })
   @Min(3000000000)
   @Max(4000000000)
   phone: string;
   @IsString({
-    message: 'Should be a valid email',
+    message: 'Should be a valid url',
   })
   @Length(10, 500, {
-    message: 'email max length is 500 characters',
+    message: 'photo min length is 10 max length is 500 characters',
   })
   photo: string;
 }

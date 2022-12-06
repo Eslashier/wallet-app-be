@@ -56,8 +56,10 @@ export class AccountEntity {
   client: ClientEntity;
 
   @OneToMany(() => MovementEntity, (movement) => movement.income)
+  @JoinColumn([{ name: 'acc_id', referencedColumnName: 'acc_id_income' }])
   incomes: MovementEntity[];
 
   @OneToMany(() => MovementEntity, (movement) => movement.outcome)
+  @JoinColumn([{ name: 'acc_id', referencedColumnName: 'acc_id_outcome' }])
   outcomes: MovementEntity[];
 }

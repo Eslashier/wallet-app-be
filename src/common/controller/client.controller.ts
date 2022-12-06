@@ -18,15 +18,9 @@ export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Get()
-  @UseGuards(TokenVerificationGuard)
   async getClients(): Promise<ClientEntity[]> {
     return this.clientService.getAll();
   }
-
-  // @Get()
-  // async getClients(): Promise<string> {
-  //   return this.clientService.getAll();
-  // }
 
   @Post()
   async createClient(@Body() client: CreateClientDto): Promise<ClientEntity> {
@@ -35,10 +29,22 @@ export class ClientController {
   }
 
   @UseInterceptors(AccountIdInterceptor)
-  @Get('/:clientInfo')
+  @Get('/account/:clientInfo')
+  @UseGuards(TokenVerificationGuard)
   async getClientByInfo(
     @Param('clientInfo') clientInfo: string,
   ): Promise<ClientEntity> {
     return this.clientService.findClientAccount(clientInfo);
+  }
+
+  @Get('/:email')
+  @UseGuards(TokenVerificationGuard)
+  async getClient(@Param('email') email: string): Promise<ClientEntity> {
+    return this.clientService.findClient(email);
+  }
+
+  @Get('/is-registered/:email')
+  async isRegistered(@Param('email') email: string): Promise<boolean> {
+    return this.clientService.isRegisteredClient(email);
   }
 }

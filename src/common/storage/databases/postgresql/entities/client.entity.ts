@@ -10,7 +10,6 @@ import { v4 as uuid } from 'uuid';
 import { AccountEntity } from './account.entity';
 import { AppEntity } from './app.entity';
 
-
 @Index('client_cli_email_Idx', ['email'], { unique: true })
 @Index('pkclient', ['id'], { unique: true })
 @Index('client_cli_phone_Idx', ['phone'], { unique: true })

@@ -1,3 +1,4 @@
+import { CreateMovementDto } from 'src/common/storage/dto/movement/create-movement.dto';
 import {
   Column,
   Entity,
@@ -32,7 +33,7 @@ export class MovementEntity {
   @Column('bigint', { name: 'mov_amount' })
   amount: string;
 
-  @Column('integer', { name: 'mov_fees', default: () => '1' })
+  @Column('integer', { name: 'mov_fees', default: () => '0' })
   fees: number;
 
   @Column('timestamp without time zone', {
@@ -54,4 +55,12 @@ export class MovementEntity {
   })
   @JoinColumn([{ name: 'acc_id_outcome', referencedColumnName: 'id' }])
   outcome: AccountEntity;
+
+  constructor(movement: CreateMovementDto) {
+    this.incomeAccountId = movement?.incomeAccountId;
+    this.outcomeAccountId = movement?.outcomeAccountId;
+    this.reason = movement?.reason;
+    this.amount = movement?.amount;
+    this.fees = movement?.fees;
+  }
 }

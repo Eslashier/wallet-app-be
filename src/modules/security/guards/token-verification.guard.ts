@@ -29,7 +29,7 @@ export class TokenVerificationGuard implements CanActivate {
         .getRequest()
         .get('authorization')
         .replace('Bearer ', '');
-      console.log(token);
+      // console.log(token);
       return this.getData(token);
     } catch (err) {
       return false;
