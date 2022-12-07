@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountEntity } from '../storage/databases/postgresql/entities/account.entity';
+import { UpdateAccountDto } from '../storage/dto/account/update-account.dto';
+import { UpdateAppReceiverDto } from '../storage/dto/app/update-app-receiver.dto';
 
 @Injectable()
 export class AccountService {
@@ -21,5 +23,58 @@ export class AccountService {
       throw new NotFoundException('there is no accounts to show');
     }
     return accounts;
+  }
+
+  async getAccount(id: string): Promise<AccountEntity> {
+    const account = await this.accountRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (!account) {
+      throw new NotFoundException(
+        `Account with the id: ${id} no accounts to show`,
+      );
+    }
+    return account;
+  }
+
+  async updateAccount(
+    id: string,
+    updatedAccount: UpdateAccountDto,
+  ): Promise<boolean> {
+    try {
+      const account = await this.getAccount(id);
+
+      if (Number(account.balance) >= Number(-updatedAccount.balance))
+        account.balance = (
+          Number(account.balance) + Number(updatedAccount?.balance)
+        ).toString();
+      else {
+        throw new NotFoundException(
+          'something went wrong updating the account',
+        );
+      }
+
+      if (updatedAccount.credit) {
+        if (Number(account.credit) >= Number(-updatedAccount.credit)) {
+          account.credit = (
+            Number(account.credit) + Number(updatedAccount?.credit)
+          ).toString();
+        } else {
+          throw new NotFoundException(
+            'something went wrong updating the account',
+          );
+        }
+      }
+
+      account.updatedDate = updatedAccount.updatedDate;
+
+      await this.accountRepository.update({ id }, account);
+
+      return true;
+    } catch (error) {
+      throw new NotFoundException('something went wrong updating the account');
+    }
   }
 }
