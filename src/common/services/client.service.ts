@@ -84,7 +84,7 @@ export class ClientService {
       },
     });
     if (clientByEmail) {
-      console.log(clientByEmail);
+      // console.log(clientByEmail);
       return clientByEmail;
     } else {
       throw new NotFoundException(

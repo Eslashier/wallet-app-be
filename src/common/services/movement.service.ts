@@ -43,7 +43,15 @@ export class MovementService {
     if (movements.length === 0) {
       throw new NotFoundException('there is no movements to show');
     }
-    const trimmedMovements = movements.slice(0, 10);
+    const uniqueIds = new Set();
+    const movementsDuplicated = movements.filter((movement) => {
+      const isDuplicate = uniqueIds.has(movement.id);
+      uniqueIds.add(movement.id);
+
+      return !isDuplicate ? true : false;
+    });
+
+    const trimmedMovements = movementsDuplicated.slice(0, 10);
     return trimmedMovements;
   }
 
@@ -79,7 +87,6 @@ export class MovementService {
       }
       return newMovement;
     } catch (err) {
-      console.log(err);
       if (err.response.message)
         throw new UnprocessableEntityException(err.response);
       else

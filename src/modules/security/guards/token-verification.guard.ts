@@ -51,8 +51,8 @@ export class TokenVerificationGuard implements CanActivate {
 
     return new Promise((resolve) => {
       verify(token, getKey, options, (err: VerifyErrors, decoded: any) => {
-        console.log('decoded', decoded);
-        console.log('err', err);
+        // console.log('decoded', decoded);
+        // console.log('err', err);
         if (err) resolve(false);
         resolve(true);
       });
