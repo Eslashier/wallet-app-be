@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,6 +10,7 @@ import { MovementEntity } from '../storage/databases/postgresql/entities/movemen
 import { CreateMovementDto } from 'src/common/storage/dto/movement/create-movement.dto';
 import { UpdateAccountDto } from '../storage/dto/account/update-account.dto';
 import { AccountService } from './account.service';
+import { ExceptionFilter } from '@nestjs/common';
 
 @Injectable()
 export class MovementService {
@@ -46,8 +48,8 @@ export class MovementService {
   }
 
   async createMovement(movement: CreateMovementDto): Promise<MovementEntity> {
-    const newMovement = this.movementRepository.create(movement);
     try {
+      const newMovement = this.movementRepository.create(movement);
       if (movement.incomeAccountId === movement.outcomeAccountId) {
         const updateAccount = new UpdateAccountDto();
         updateAccount.balance = movement.amount;
@@ -75,10 +77,15 @@ export class MovementService {
         );
         await this.movementRepository.save(newMovement);
       }
+      return newMovement;
     } catch (err) {
       console.log(err);
-      throw new BadRequestException('Something went wrong');
+      if (err.response.message)
+        throw new UnprocessableEntityException(err.response);
+      else
+        throw new UnprocessableEntityException(
+          'something went wrong creating the movement',
+        );
     }
-    return newMovement;
   }
 }

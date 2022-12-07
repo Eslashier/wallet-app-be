@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountEntity } from '../storage/databases/postgresql/entities/account.entity';
 import { UpdateAccountDto } from '../storage/dto/account/update-account.dto';
-import { UpdateAppReceiverDto } from '../storage/dto/app/update-app-receiver.dto';
 
 @Injectable()
 export class AccountService {
@@ -52,7 +55,7 @@ export class AccountService {
         ).toString();
       else {
         throw new NotFoundException(
-          'something went wrong updating the account',
+          'The amount cannot be greater than the balance',
         );
       }
 
@@ -63,7 +66,7 @@ export class AccountService {
           ).toString();
         } else {
           throw new NotFoundException(
-            'something went wrong updating the account',
+            'The amount to loan cannot be greater than the credit',
           );
         }
       }
@@ -74,7 +77,13 @@ export class AccountService {
 
       return true;
     } catch (error) {
-      throw new NotFoundException('something went wrong updating the account');
+      if (error.response.message)
+        throw new UnprocessableEntityException(error.response.message);
+      else {
+        throw new NotFoundException(
+          'something went wrong updating the account',
+        );
+      }
     }
   }
 }
