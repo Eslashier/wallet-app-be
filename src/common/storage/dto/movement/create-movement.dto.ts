@@ -5,8 +5,8 @@ export class CreateMovementDto {
   incomeAccountId: string;
   @IsUUID()
   outcomeAccountId: string;
-  @Length(10, 500, {
-    message: 'message min length is 10 max length is 500 characters',
+  @Length(5, 500, {
+    message: 'message min length is 5 max length is 500 characters',
   })
   reason: string;
   @IsInt({

@@ -85,6 +85,7 @@ export class MovementService {
         );
         await this.movementRepository.save(newMovement);
       }
+      console.log(newMovement);
       return newMovement;
     } catch (err) {
       if (err.response.message)

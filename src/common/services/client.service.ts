@@ -60,6 +60,34 @@ export class ClientService {
     }
   }
 
+  async accountExist(clientInfo: string): Promise<boolean> {
+    const clientByEmail = await this.clientRepository.findOne({
+      where: {
+        email: clientInfo,
+      },
+      relations: {
+        app: true,
+        account: true,
+      },
+    });
+    const clientByPhone = await this.clientRepository.findOne({
+      where: {
+        phone: clientInfo,
+      },
+      relations: {
+        app: true,
+        account: true,
+      },
+    });
+    if (clientByEmail) {
+      return true;
+    } else if (clientByPhone) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   async isRegisteredClient(clientEmail: string): Promise<boolean> {
     const foundClient = await this.clientRepository.findOne({
       where: {
