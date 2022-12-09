@@ -17,10 +17,10 @@ import { CreateClientDto } from '../storage/dto/client/create-client.dto';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  @Get()
-  async getClients(): Promise<ClientEntity[]> {
-    return this.clientService.getAll();
-  }
+  // @Get()
+  // async getClients(): Promise<ClientEntity[]> {
+  //   return this.clientService.getAll();
+  // }
 
   @Post()
   async createClient(@Body() client: CreateClientDto): Promise<ClientEntity> {
@@ -30,8 +30,8 @@ export class ClientController {
 
   @UseInterceptors(AccountIdInterceptor)
   @Get('/account/:clientInfo')
-  // @UseGuards(TokenVerificationGuard)
-  async getClientByInfo(
+  @UseGuards(TokenVerificationGuard)
+  async findClientAccount(
     @Param('clientInfo') clientInfo: string,
   ): Promise<ClientEntity> {
     return this.clientService.findClientAccount(clientInfo);
@@ -44,6 +44,7 @@ export class ClientController {
   }
 
   @Get('/account-exist/:info')
+  @UseGuards(TokenVerificationGuard)
   async accountExist(@Param('info') info: string): Promise<boolean> {
     return this.clientService.accountExist(info);
   }

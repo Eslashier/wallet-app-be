@@ -20,13 +20,13 @@ export class MovementService {
     private readonly accountService: AccountService,
   ) {}
 
-  async getAll(): Promise<MovementEntity[]> {
-    const movements = await this.movementRepository.find();
-    if (movements.length === 0) {
-      throw new NotFoundException('there is no movements to show');
-    }
-    return movements;
-  }
+  // async getAll(): Promise<MovementEntity[]> {
+  //   const movements = await this.movementRepository.find();
+  //   if (movements.length === 0) {
+  //     throw new NotFoundException('there is no movements to show');
+  //   }
+  //   return movements;
+  // }
 
   async getMovementsById(accountId: string): Promise<MovementEntity[]> {
     const movements = (

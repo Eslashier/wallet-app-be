@@ -6,8 +6,8 @@ import { AccountEntity } from '../storage/databases/postgresql/entities/account.
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
-  @Get()
-  async getClients(): Promise<AccountEntity[]> {
-    return this.accountService.getAll();
-  }
+  // @Get()
+  // async getClients(): Promise<AccountEntity[]> {
+  //   return this.accountService.getAll();
+  // }
 }

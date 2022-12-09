@@ -15,18 +15,18 @@ export class AccountService {
     private readonly accountRepository: Repository<AccountEntity>,
   ) {}
 
-  async getAll(): Promise<AccountEntity[]> {
-    const accounts = await this.accountRepository.find({
-      relations: {
-        incomes: true,
-        outcomes: true,
-      },
-    });
-    if (accounts.length === 0) {
-      throw new NotFoundException('there is no accounts to show');
-    }
-    return accounts;
-  }
+  // async getAll(): Promise<AccountEntity[]> {
+  //   const accounts = await this.accountRepository.find({
+  //     relations: {
+  //       incomes: true,
+  //       outcomes: true,
+  //     },
+  //   });
+  //   if (accounts.length === 0) {
+  //     throw new NotFoundException('there is no accounts to show');
+  //   }
+  //   return accounts;
+  // }
 
   async getAccount(id: string): Promise<AccountEntity> {
     const account = await this.accountRepository.findOne({

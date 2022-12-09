@@ -11,13 +11,13 @@ export class AppService {
     private readonly appRepository: Repository<AppEntity>,
   ) {}
 
-  async getAll(): Promise<AppEntity[]> {
-    const clients = await this.appRepository.find();
-    if (clients.length === 0) {
-      throw new NotFoundException('there is no clients to show');
-    }
-    return clients;
-  }
+  // async getAll(): Promise<AppEntity[]> {
+  //   const clients = await this.appRepository.find();
+  //   if (clients.length === 0) {
+  //     throw new NotFoundException('there is no clients to show');
+  //   }
+  //   return clients;
+  // }
 
   async findById(id: string): Promise<AppEntity> {
     const app = await this.appRepository.findOne({ where: { id } });
