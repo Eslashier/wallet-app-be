@@ -1,4 +1,5 @@
-import { CreateClientDto } from 'src/common/storage/dto/client/create-client.dto';
+import { CreateClientDto } from '../../../dto/client/create-client.dto';
+
 import {
   Column,
   Entity,

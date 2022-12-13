@@ -48,7 +48,7 @@ export class AccountService {
   ): Promise<boolean> {
     try {
       const account = await this.getAccount(id);
-
+      console.log(account);
       if (Number(account.balance) >= Number(-updatedAccount.balance))
         account.balance = (
           Number(account.balance) + Number(updatedAccount?.balance)

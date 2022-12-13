@@ -1,4 +1,5 @@
-import { CreateMovementDto } from 'src/common/storage/dto/movement/create-movement.dto';
+import { CreateMovementDto } from '../../../dto/movement/create-movement.dto';
+
 import {
   Column,
   Entity,
