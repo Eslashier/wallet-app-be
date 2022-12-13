@@ -22,7 +22,9 @@ export class AppService {
   async findById(id: string): Promise<AppEntity> {
     const app = await this.appRepository.findOne({ where: { id } });
     if (!app) {
-      throw new NotFoundException('there is no clients to show');
+      throw new NotFoundException(
+        'There is no apps to show with the id: ${id}',
+      );
     }
     return app;
   }

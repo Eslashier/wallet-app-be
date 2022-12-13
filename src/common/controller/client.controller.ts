@@ -17,10 +17,10 @@ import { CreateClientDto } from '../storage/dto/client/create-client.dto';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  // @Get()
-  // async getClients(): Promise<ClientEntity[]> {
-  //   return this.clientService.getAll();
-  // }
+  @Get()
+  async getClients(): Promise<ClientEntity[]> {
+    return this.clientService.getAll();
+  }
 
   @Post()
   async createClient(@Body() client: CreateClientDto): Promise<ClientEntity> {

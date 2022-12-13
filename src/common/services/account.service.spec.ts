@@ -1,9 +1,8 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountEntity } from '../storage/databases/postgresql/entities/account.entity';
-import { ClientEntity } from '../storage/databases/postgresql/entities/client.entity';
-import { CreateClientDto } from '../storage/dto/client/create-client.dto';
 import { AccountService } from './account.service';
 
 const testAccount = new AccountEntity();
@@ -45,12 +44,33 @@ describe('AccountService', () => {
   describe('getAccountById', () => {
     it('should get one account', async () => {
       //Arrange
+      const uuid = 'an uuid';
       const repoSpy = jest.spyOn(repositoryMock, 'findOne');
       //Act
-      const accountFound = service.getAccount('an uuid');
+      const accountFound = service.getAccount(uuid);
       //Assert
       expect(accountFound).resolves.toEqual(testAccount);
-      expect(repoSpy).toBeCalledWith({ where: { id: 'an uuid' } });
+      expect(repoSpy).toBeCalledWith({ where: { id: uuid } });
+    });
+    it('should throw notFoundException', () => {
+      //Arrange
+      const badUuid = 'a bad uuid';
+      const repoSpy = jest
+        .spyOn(repositoryMock, 'findOne')
+        .mockRejectedValueOnce(
+          new NotFoundException(
+            `Account with the id: ${badUuid} no accounts to show`,
+          ),
+        );
+      //Act
+      expect(service.getAccount(badUuid)).rejects.toThrow(
+        new NotFoundException(
+          `Account with the id: ${badUuid} no accounts to show`,
+        ),
+      );
+      //Assert
+      expect(repoSpy).toBeCalledWith({ where: { id: badUuid } });
+      expect(repoSpy).toBeCalledTimes(1);
     });
   });
 });
