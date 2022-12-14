@@ -69,12 +69,16 @@ export class ClientService {
   }
 
   async isRegisteredClient(clientEmail: string): Promise<boolean> {
-    const foundClient = await this.clientRepository.findOne({
-      where: {
-        email: clientEmail,
-      },
-    });
-    return foundClient ? true : false;
+    try {
+      await this.clientRepository.findOneOrFail({
+        where: {
+          email: clientEmail,
+        },
+      });
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 
   async findClient(clientInfo: string): Promise<ClientEntity> {

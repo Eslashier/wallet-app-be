@@ -49,7 +49,7 @@ describe('ClientService', () => {
       expect(repositoryMock.save).toBeCalledTimes(1);
     });
   });
-  describe('getAppById', () => {
+  describe('getClientByEmail', () => {
     it('should get one client with relations', async () => {
       //Arrange
       const email = 'an email';
@@ -101,7 +101,7 @@ describe('ClientService', () => {
     it('should return true if the user exists', async () => {
       //Arrange
       const email = 'an email';
-      const repoSpy = jest.spyOn(repositoryMock, 'findOne');
+      const repoSpy = jest.spyOn(repositoryMock, 'findOneOrFail');
       //Act
       const clientFound = service.isRegisteredClient(email);
       //Assert
@@ -117,12 +117,12 @@ describe('ClientService', () => {
       //Arrange
       const unregisteredEmail = 'an email';
       const repoSpy = jest
-        .spyOn(repositoryMock, 'findOne')
+        .spyOn(repositoryMock, 'findOneOrFail')
         .mockRejectedValue(false);
       //Act
       const clientFound = service.isRegisteredClient(unregisteredEmail);
       //Assert
-      expect(clientFound).rejects.toEqual(false);
+      expect(clientFound).resolves.toEqual(false);
 
       expect(repoSpy).toBeCalledWith({
         where: {
@@ -132,60 +132,64 @@ describe('ClientService', () => {
     });
   });
   describe('accountExists', () => {
-    it('should return true if the account exists using email', async () => {
+    it('should return true if the account exists using email or phone', async () => {
       //Arrange
-      const email = 'an email';
-      const repoSpy = jest
-        .spyOn(repositoryMock, 'findOne')
-        .mockResolvedValue(testClient);
+      const emailOrPhone = 'an email or phone that exists';
+      const repoSpy = jest.spyOn(repositoryMock, 'findOneOrFail');
       //Act
-      const clientFoundByEmail = service.accountExist(email);
+      const clientFoundByEmail = service.accountExist(emailOrPhone);
       //Assert
       expect(clientFoundByEmail).resolves.toEqual(true);
 
-      // expect(repoSpy).toHaveBeenCalledWith({
-      //   where: {
-      //     email: email,
-      //   },
-      // });
-      // expect(repoSpy).toBeCalledTimes(1);
+      expect(repoSpy).toHaveBeenCalledWith({
+        where: [
+          {
+            email: emailOrPhone,
+          },
+          {
+            phone: emailOrPhone,
+          },
+        ],
+      });
+      expect(repoSpy).toBeCalledTimes(1);
     });
     it('should return false if the account does not exists', async () => {
       //Arrange
-      const phone = 'a phone number';
+      const wrongEmailOrPhone = 'an email or phone that does not exists';
       const repoSpy = jest
-        .spyOn(repositoryMock, 'findOne')
+        .spyOn(repositoryMock, 'findOneOrFail')
         .mockRejectedValue(false);
-
       //Act
-      const clientFoundByPhone = service.accountExist(phone);
+      const clientFoundByEmail = service.accountExist(wrongEmailOrPhone);
       //Assert
-      expect(clientFoundByPhone).rejects.toEqual(false);
+      expect(clientFoundByEmail).resolves.toEqual(false);
 
-      // expect(repoSpy).toHaveBeenCalledWith({
-      //   where: {
-      //     email: phone,
-      //   },
-      // });
-      // expect(repoSpy).toBeCalledTimes(1);
+      expect(repoSpy).toHaveBeenCalledWith({
+        where: [
+          {
+            email: wrongEmailOrPhone,
+          },
+          {
+            phone: wrongEmailOrPhone,
+          },
+        ],
+      });
+      expect(repoSpy).toBeCalledTimes(1);
     });
   });
-  describe('findClientAccount', () => {
-    it('should return true if the account exists using email', async () => {
+  describe('findClient', () => {
+    it('should return the client if the account exists using email or phone', async () => {
       //Arrange
-      const email = 'an email';
-      const repoSpy = jest
-        .spyOn(repositoryMock, 'findOne')
-        .mockResolvedValue(testClient);
+      const emailOrPhone = 'an email or phone that exists';
+      const repoSpy = jest.spyOn(repositoryMock, 'findOneOrFail');
       //Act
-      const clientFoundByEmail = service.findClientAccount(email);
+      const clientFoundByEmail = service.findClient(emailOrPhone);
       //Assert
-      console.log(clientFoundByEmail);
       expect(clientFoundByEmail).resolves.toEqual(testClient);
 
       expect(repoSpy).toHaveBeenCalledWith({
         where: {
-          email: email,
+          email: emailOrPhone,
         },
         relations: {
           app: true,
@@ -194,29 +198,28 @@ describe('ClientService', () => {
       });
       expect(repoSpy).toBeCalledTimes(1);
     });
-    it('should return false if the account does not exists', async () => {
+    it('should return NotFoundException if the account does not exists', async () => {
       //Arrange
-      const email = 'an email';
+      const wrongEmailOrPhone = 'an email or phone that does not exists';
       const repoSpy = jest
-        .spyOn(repositoryMock, 'findOne')
-        .mockRejectedValueOnce(
+        .spyOn(repositoryMock, 'findOneOrFail')
+        .mockRejectedValue(
           new NotFoundException(
-            `The client with the info : ${email} has been not found`,
+            `The client with the email : ${wrongEmailOrPhone} has been not found`,
           ),
         );
-
       //Act
-      const clientFoundByPhone = service.findClientAccount(email);
+      const clientFoundByEmail = service.findClient(wrongEmailOrPhone);
       //Assert
-      expect(clientFoundByPhone).rejects.toEqual(
+      expect(clientFoundByEmail).rejects.toEqual(
         new NotFoundException(
-          `The client with the info : ${email} has been not found`,
+          `The client with the email : ${wrongEmailOrPhone} has been not found`,
         ),
       );
 
       expect(repoSpy).toHaveBeenCalledWith({
         where: {
-          email: email,
+          email: wrongEmailOrPhone,
         },
         relations: {
           app: true,
