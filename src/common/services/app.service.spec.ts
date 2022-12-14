@@ -6,6 +6,7 @@ import { AppEntity } from '../storage/databases/postgresql/entities/app.entity';
 import { AppService } from './app.service';
 
 const testApp = new AppEntity();
+testApp.id = 'an uuid';
 testApp.clientId = 'clientUUID';
 testApp.color = 'default';
 testApp.createdDate = new Date();
@@ -22,7 +23,7 @@ describe('AppService', () => {
         {
           provide: getRepositoryToken(AppEntity),
           useValue: {
-            findOne: jest.fn().mockResolvedValue(testApp),
+            findOneOrFail: jest.fn().mockResolvedValue(testApp),
             update: jest.fn().mockResolvedValue(true),
           },
         },
@@ -38,10 +39,10 @@ describe('AppService', () => {
   });
 
   describe('getAppById', () => {
-    it('should get one account', async () => {
+    it('should get one app', async () => {
       //Arrange
       const uuid = 'an uuid';
-      const repoSpy = jest.spyOn(repositoryMock, 'findOne');
+      const repoSpy = jest.spyOn(repositoryMock, 'findOneOrFail');
       //Act
       const accountFound = service.findById(uuid);
       //Assert
@@ -52,7 +53,7 @@ describe('AppService', () => {
       //Arrange
       const badUuid = 'a bad uuid';
       const repoSpy = jest
-        .spyOn(repositoryMock, 'findOne')
+        .spyOn(repositoryMock, 'findOneOrFail')
         .mockRejectedValueOnce(
           new NotFoundException(
             `There is no apps to show with the id: ${badUuid}`,
@@ -66,6 +67,51 @@ describe('AppService', () => {
       );
       //Assert
       expect(repoSpy).toBeCalledWith({ where: { id: badUuid } });
+      expect(repoSpy).toBeCalledTimes(1);
+    });
+  });
+
+  describe('patchById', () => {
+    it('should patch app', async () => {
+      //Arrange
+      const uuid = 'an uuid';
+      const updatedTestApp = await service.updateApp(uuid, {
+        color: 'default',
+      });
+      //Act
+      expect(updatedTestApp).toEqual(testApp);
+      //Assert
+      expect(repositoryMock.update).toBeCalledWith(
+        { id: uuid },
+        {
+          color: 'default',
+        },
+      );
+      expect(repositoryMock.update).toBeCalledTimes(1);
+    });
+    it('should throw notFoundException', () => {
+      //Arrange
+      const badUuid = 'a bad uuid';
+      const repoSpy = jest
+        .spyOn(repositoryMock, 'update')
+        .mockRejectedValueOnce(
+          new NotFoundException('something went wrong patching the app'),
+        );
+      //Act
+      expect(
+        service.updateApp(badUuid, {
+          color: 'default',
+        }),
+      ).rejects.toThrow(
+        new NotFoundException('something went wrong patching the app'),
+      );
+      //Assert
+      expect(repoSpy).toBeCalledWith(
+        { id: badUuid },
+        {
+          color: 'default',
+        },
+      );
       expect(repoSpy).toBeCalledTimes(1);
     });
   });

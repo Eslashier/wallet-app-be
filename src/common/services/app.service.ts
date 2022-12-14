@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AppEntity } from '../storage/databases/postgresql/entities/app.entity';
@@ -20,17 +24,22 @@ export class AppService {
   // }
 
   async findById(id: string): Promise<AppEntity> {
-    const app = await this.appRepository.findOne({ where: { id } });
-    if (!app) {
+    try {
+      const app = await this.appRepository.findOneOrFail({ where: { id } });
+      return app;
+    } catch (err) {
       throw new NotFoundException(
-        'There is no apps to show with the id: ${id}',
+        `There is no apps to show with the id: ${id}`,
       );
     }
-    return app;
   }
 
   async updateApp(id: string, updateApp: UpdateAppDto): Promise<AppEntity> {
-    await this.appRepository.update({ id }, updateApp);
-    return this.findById(id);
+    try {
+      await this.appRepository.update({ id }, updateApp);
+      return this.findById(id);
+    } catch (err) {
+      throw new BadRequestException('something went wrong patching the app');
+    }
   }
 }

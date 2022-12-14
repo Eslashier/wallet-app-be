@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
@@ -29,17 +30,18 @@ export class AccountService {
   // }
 
   async getAccount(id: string): Promise<AccountEntity> {
-    const account = await this.accountRepository.findOne({
-      where: {
-        id: id,
-      },
-    });
-    if (!account) {
+    try {
+      const account = await this.accountRepository.findOneOrFail({
+        where: {
+          id: id,
+        },
+      });
+      return account;
+    } catch (err) {
       throw new NotFoundException(
         `Account with the id: ${id} no accounts to show`,
       );
     }
-    return account;
   }
 
   async updateAccount(
@@ -48,13 +50,12 @@ export class AccountService {
   ): Promise<boolean> {
     try {
       const account = await this.getAccount(id);
-      console.log(account);
       if (Number(account.balance) >= Number(-updatedAccount.balance))
         account.balance = (
           Number(account.balance) + Number(updatedAccount?.balance)
         ).toString();
       else {
-        throw new NotFoundException(
+        throw new BadRequestException(
           'The amount cannot be greater than the balance',
         );
       }
@@ -65,7 +66,7 @@ export class AccountService {
             Number(account.credit) + Number(updatedAccount?.credit)
           ).toString();
         } else {
-          throw new NotFoundException(
+          throw new BadRequestException(
             'The amount to loan cannot be greater than the credit',
           );
         }
@@ -77,13 +78,7 @@ export class AccountService {
 
       return true;
     } catch (error) {
-      if (error.response.message)
-        throw new UnprocessableEntityException(error.response.message);
-      else {
-        throw new NotFoundException(
-          'something went wrong updating the account',
-        );
-      }
+      throw new UnprocessableEntityException(error.response.message);
     }
   }
 }
