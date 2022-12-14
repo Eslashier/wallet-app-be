@@ -181,7 +181,9 @@ describe('ClientService', () => {
     it('should return the client if the account exists using email or phone', async () => {
       //Arrange
       const emailOrPhone = 'an email or phone that exists';
-      const repoSpy = jest.spyOn(repositoryMock, 'findOneOrFail');
+      const repoSpy = jest
+        .spyOn(repositoryMock, 'findOneOrFail')
+        .mockResolvedValue(testClient);
       //Act
       const clientFoundByEmail = service.findClient(emailOrPhone);
       //Assert
