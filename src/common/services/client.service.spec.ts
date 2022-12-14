@@ -41,6 +41,7 @@ describe('ClientService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
   describe('createClient', () => {
     it('should successfully create and insert a client', () => {
       expect(service.createClient(testClient)).resolves.toEqual(testClient);
@@ -67,6 +68,7 @@ describe('ClientService', () => {
           account: true,
         },
       });
+      expect(repoSpy).toBeCalledTimes(1);
     });
     it('should throw notFoundException', () => {
       //Arrange
@@ -112,6 +114,7 @@ describe('ClientService', () => {
           email: email,
         },
       });
+      expect(repoSpy).toBeCalledTimes(1);
     });
     it('should return false if the user does not exists', async () => {
       //Arrange
@@ -129,6 +132,7 @@ describe('ClientService', () => {
           email: unregisteredEmail,
         },
       });
+      expect(repoSpy).toBeCalledTimes(1);
     });
   });
   describe('accountExists', () => {

@@ -22,7 +22,7 @@ export class MovementController {
   }
 
   @Post()
-  // @UseGuards(TokenVerificationGuard)
+  @UseGuards(TokenVerificationGuard)
   async createMovement(
     @Body() movement: CreateMovementDto,
   ): Promise<MovementEntity> {

@@ -29,31 +29,22 @@ export class MovementService {
   // }
 
   async getMovementsById(accountId: string): Promise<MovementEntity[]> {
-    const movements = (
-      await this.movementRepository.find({
-        where: { incomeAccountId: accountId },
-      })
-    )
-      .concat(
-        await this.movementRepository.find({
-          where: { outcomeAccountId: accountId },
-        }),
-      )
-      .sort((a, b) => b.dateTime.getTime() - a.dateTime.getTime());
-
-    if (movements.length === 0) {
-      throw new NotFoundException('there is no movements to show');
-    }
-    const uniqueIds = new Set();
-    const movementsDuplicated = movements.filter((movement) => {
-      const isDuplicate = uniqueIds.has(movement.id);
-      uniqueIds.add(movement.id);
-
-      return !isDuplicate ? true : false;
+    const movements = await this.movementRepository.find({
+      order: {
+        dateTime: 'DESC',
+      },
+      where: [
+        {
+          incomeAccountId: accountId,
+        },
+        {
+          outcomeAccountId: accountId,
+        },
+      ],
+      skip: 0,
+      take: 10,
     });
-
-    const trimmedMovements = movementsDuplicated.slice(0, 10);
-    return trimmedMovements;
+    return movements;
   }
 
   async createMovement(movement: CreateMovementDto): Promise<MovementEntity> {
@@ -88,12 +79,7 @@ export class MovementService {
       }
       return newMovement;
     } catch (err) {
-      if (err.response.message)
-        throw new UnprocessableEntityException(err.response);
-      else
-        throw new UnprocessableEntityException(
-          'something went wrong creating the movement',
-        );
+      throw new UnprocessableEntityException(err.response);
     }
   }
 }
