@@ -40,6 +40,7 @@ export class MovementService {
         }),
       )
       .sort((a, b) => b.dateTime.getTime() - a.dateTime.getTime());
+
     if (movements.length === 0) {
       throw new NotFoundException('there is no movements to show');
     }

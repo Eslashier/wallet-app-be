@@ -11,18 +11,18 @@ export class ClientService {
     private readonly clientRepository: Repository<ClientEntity>,
   ) {}
 
-  async getAll(): Promise<ClientEntity[]> {
-    const clients = await this.clientRepository.find({
-      relations: {
-        app: true,
-        account: true,
-      },
-    });
-    if (clients.length === 0) {
-      throw new NotFoundException('there is no clients to show');
-    }
-    return clients;
-  }
+  // async getAll(): Promise<ClientEntity[]> {
+  //   const clients = await this.clientRepository.find({
+  //     relations: {
+  //       app: true,
+  //       account: true,
+  //     },
+  //   });
+  //   if (clients.length === 0) {
+  //     throw new NotFoundException('there is no clients to show');
+  //   }
+  //   return clients;
+  // }
 
   async createClient(client: ClientEntity): Promise<ClientEntity> {
     const newClient = this.clientRepository.create(client);
@@ -31,29 +31,19 @@ export class ClientService {
   }
 
   async findClientAccount(clientInfo: string): Promise<ClientEntity> {
-    const clientByEmail = await this.clientRepository.findOne({
-      where: {
-        email: clientInfo,
-      },
-      relations: {
-        app: true,
-        account: true,
-      },
-    });
-    const clientByPhone = await this.clientRepository.findOne({
-      where: {
-        phone: clientInfo,
-      },
-      relations: {
-        app: true,
-        account: true,
-      },
-    });
-    if (clientByEmail) {
-      return clientByEmail;
-    } else if (clientByPhone) {
-      return clientByPhone;
-    } else {
+    try {
+      const clientFound = await this.clientRepository.findOneOrFail({
+        where: [
+          {
+            email: clientInfo,
+          },
+          {
+            phone: clientInfo,
+          },
+        ],
+      });
+      return clientFound;
+    } catch (err) {
       throw new NotFoundException(
         `The client with the info : ${clientInfo} has been not found`,
       );
@@ -61,29 +51,19 @@ export class ClientService {
   }
 
   async accountExist(clientInfo: string): Promise<boolean> {
-    const clientByEmail = await this.clientRepository.findOne({
-      where: {
-        email: clientInfo,
-      },
-      relations: {
-        app: true,
-        account: true,
-      },
-    });
-    const clientByPhone = await this.clientRepository.findOne({
-      where: {
-        phone: clientInfo,
-      },
-      relations: {
-        app: true,
-        account: true,
-      },
-    });
-    if (clientByEmail) {
+    try {
+      await this.clientRepository.findOneOrFail({
+        where: [
+          {
+            email: clientInfo,
+          },
+          {
+            phone: clientInfo,
+          },
+        ],
+      });
       return true;
-    } else if (clientByPhone) {
-      return true;
-    } else {
+    } catch (err) {
       return false;
     }
   }
@@ -93,27 +73,23 @@ export class ClientService {
       where: {
         email: clientEmail,
       },
-      relations: {
-        app: true,
-        account: true,
-      },
     });
     return foundClient ? true : false;
   }
 
   async findClient(clientInfo: string): Promise<ClientEntity> {
-    const clientByEmail = await this.clientRepository.findOne({
-      where: {
-        email: clientInfo,
-      },
-      relations: {
-        app: true,
-        account: true,
-      },
-    });
-    if (clientByEmail) {
+    try {
+      const clientByEmail = await this.clientRepository.findOneOrFail({
+        where: {
+          email: clientInfo,
+        },
+        relations: {
+          app: true,
+          account: true,
+        },
+      });
       return clientByEmail;
-    } else {
+    } catch (error) {
       throw new NotFoundException(
         `The client with the email : ${clientInfo} has been not found`,
       );
