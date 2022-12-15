@@ -1,4 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
 import { AccountService } from '../services/account.service';
 import { AccountEntity } from '../storage/databases/postgresql/entities/account.entity';
 
@@ -12,7 +13,8 @@ export class AccountController {
   // }
 
   @Get()
-  async getClients(@Param('id') id: string): Promise<AccountEntity> {
+  // @UseGuards(TokenVerificationGuard)
+  async getClient(@Param('id') id: string): Promise<AccountEntity> {
     return this.accountService.getAccount(id);
   }
 }

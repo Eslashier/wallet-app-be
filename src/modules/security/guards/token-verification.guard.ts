@@ -29,7 +29,6 @@ export class TokenVerificationGuard implements CanActivate {
         .getRequest()
         .get('authorization')
         .replace('Bearer ', '');
-      // console.log(token);
       return this.getData(token);
     } catch (err) {
       return false;
@@ -51,8 +50,6 @@ export class TokenVerificationGuard implements CanActivate {
 
     return new Promise((resolve) => {
       verify(token, getKey, options, (err: VerifyErrors, decoded: any) => {
-        // console.log('decoded', decoded);
-        // console.log('err', err);
         if (err) resolve(false);
         resolve(true);
       });

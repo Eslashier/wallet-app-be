@@ -14,7 +14,7 @@ export class MovementController {
   // }
 
   @Get('/:accountId')
-  @UseGuards(TokenVerificationGuard)
+  // @UseGuards(TokenVerificationGuard)
   async getMovementsById(
     @Param('accountId') accountId: string,
   ): Promise<MovementEntity[]> {
@@ -22,7 +22,7 @@ export class MovementController {
   }
 
   @Post()
-  @UseGuards(TokenVerificationGuard)
+  // @UseGuards(TokenVerificationGuard)
   async createMovement(
     @Body() movement: CreateMovementDto,
   ): Promise<MovementEntity> {

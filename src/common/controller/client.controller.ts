@@ -30,7 +30,7 @@ export class ClientController {
 
   @UseInterceptors(AccountIdInterceptor)
   @Get('/account/:clientInfo')
-  @UseGuards(TokenVerificationGuard)
+  // @UseGuards(TokenVerificationGuard)
   async findClientAccount(
     @Param('clientInfo') clientInfo: string,
   ): Promise<ClientEntity> {
@@ -38,19 +38,19 @@ export class ClientController {
   }
 
   @Get('/:email')
-  @UseGuards(TokenVerificationGuard)
-  async getClient(@Param('email') email: string): Promise<ClientEntity> {
+  // @UseGuards(TokenVerificationGuard)
+  async findClient(@Param('email') email: string): Promise<ClientEntity> {
     return this.clientService.findClient(email);
   }
 
   @Get('/account-exist/:info')
-  @UseGuards(TokenVerificationGuard)
+  // @UseGuards(TokenVerificationGuard)
   async accountExist(@Param('info') info: string): Promise<boolean> {
     return this.clientService.accountExist(info);
   }
 
   @Get('/is-registered/:email')
-  async isRegistered(@Param('email') email: string): Promise<boolean> {
+  async isRegisteredClient(@Param('email') email: string): Promise<boolean> {
     return this.clientService.isRegisteredClient(email);
   }
 }

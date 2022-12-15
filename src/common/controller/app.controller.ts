@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
-import { TokenVerificationGuard } from 'src/modules/security/guards/token-verification.guard';
+import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
 import { AppService } from '../services/app.service';
-import { AppEntity } from '../storage/databases/postgresql/entities/app.entity';
 import { UpdateAppReceiverDto } from '../storage/dto/app/update-app-receiver.dto';
 import { UpdateAppDto } from '../storage/dto/app/update-app.dto';
 
@@ -15,7 +14,7 @@ export class AppController {
   // }
 
   @Patch('/:id')
-  @UseGuards(TokenVerificationGuard)
+  // @UseGuards(TokenVerificationGuard)
   async updateApp(
     @Param('id') id: string,
     @Body() updateApp: UpdateAppReceiverDto,

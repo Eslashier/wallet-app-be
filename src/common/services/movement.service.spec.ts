@@ -112,14 +112,14 @@ describe('MovementService', () => {
       expect(repoSpy).toBeCalledTimes(1);
     });
   });
-  describe('createMovement', () => {
-    it('should create a movement', async () => {
-      expect(service.createMovement(testMovement)).resolves.toEqual(
-        testMovement,
-      );
-      expect(repositoryMock).toBeCalledTimes(1);
-      expect(repositoryMock.create).toBeCalledWith(testMovement);
-      expect(repositoryMock.save).toBeCalledTimes(1);
-    });
-  });
+  // describe('createMovement', () => {
+  //   it('should create a movement', async () => {
+  //     expect(service.createMovement(testMovement)).resolves.toEqual(
+  //       testMovement,
+  //     );
+  //     expect(repositoryMock).toBeCalledTimes(1);
+  //     expect(repositoryMock.create).toBeCalledWith(testMovement);
+  //     expect(repositoryMock.save).toBeCalledTimes(1);
+  //   });
+  // });
 });
