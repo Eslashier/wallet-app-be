@@ -60,14 +60,14 @@ describe('MovementController', () => {
   });
 
   describe('newClient', () => {
-    it('should create a new client', async () => {
+    it('should create a new movement', async () => {
       await expect(controller.createMovement(testMovement)).resolves.toEqual(
         testMovement,
       );
     });
   });
   describe('getByClientData', () => {
-    it('should create a new client', async () => {
+    it('should return an array of movements', async () => {
       await expect(controller.getMovementsById('an uuid')).resolves.toEqual(
         testMovementArray,
       );
