@@ -7,6 +7,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { AccountService } from './account.service';
 import { AccountEntity } from '../storage/databases/postgresql/entities/account.entity';
 import { CreateMovementDto } from 'src/common/storage/dto/movement/create-movement.dto';
+import { resolve } from 'path';
+import { UnprocessableEntityException } from '@nestjs/common';
 
 const testMovementDto: CreateMovementDto = {
   incomeAccountId: 'an uuid',
@@ -66,13 +68,15 @@ describe('MovementService', () => {
           provide: getRepositoryToken(MovementEntity),
           useValue: {
             create: jest.fn().mockResolvedValue(true),
-            save: jest.fn().mockResolvedValue(true),
+            save: jest.fn((data) => data),
             find: jest.fn().mockResolvedValue(testMovementArray),
           },
         },
         {
-          provide: getRepositoryToken(AccountEntity),
-          useValue: createMock<Repository<AccountEntity>>(),
+          provide: AccountService,
+          useValue: {
+            updateAccount: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -112,14 +116,29 @@ describe('MovementService', () => {
       expect(repoSpy).toBeCalledTimes(1);
     });
   });
-  // describe('createMovement', () => {
-  //   it('should create a movement', async () => {
-  //     expect(service.createMovement(testMovement)).resolves.toEqual(
-  //       testMovement,
-  //     );
-  //     expect(repositoryMock).toBeCalledTimes(1);
-  //     expect(repositoryMock.create).toBeCalledWith(testMovement);
-  //     expect(repositoryMock.save).toBeCalledTimes(1);
-  //   });
-  // });
+  describe('createMovement', () => {
+    it('should create a movement', async () => {
+      jest.spyOn(repositoryMock, 'save').mockResolvedValue(testMovement);
+      expect(service.createMovement(testMovement)).resolves.toEqual(
+        testMovement,
+      );
+      expect(repositoryMock.create).toBeCalledWith(testMovement);
+    });
+    it('should create a movement', async () => {
+      jest.spyOn(repositoryMock, 'save').mockResolvedValue(testMovementLoan);
+      expect(service.createMovement(testMovementLoan)).resolves.toEqual(
+        testMovementLoan,
+      );
+      expect(repositoryMock.create).toBeCalledWith(testMovementLoan);
+    });
+    it('should throw an UnprocessableEntityException', async () => {
+      jest
+        .spyOn(repositoryMock, 'save')
+        .mockRejectedValue(new UnprocessableEntityException());
+      expect(service.createMovement(testMovementLoan)).rejects.toEqual(
+        new UnprocessableEntityException(),
+      );
+      expect(repositoryMock.create).toBeCalledWith(testMovementLoan);
+    });
+  });
 });

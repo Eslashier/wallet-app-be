@@ -4,12 +4,16 @@ import { AppService } from '../services/app.service';
 import { UpdateAppReceiverDto } from '../storage/dto/app/update-app-receiver.dto';
 import { UpdateAppDto } from '../storage/dto/app/update-app.dto';
 import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
+import { CanActivate } from '@nestjs/common';
 
 describe('AppController', () => {
   let controller: AppController;
   let service: AppService;
 
   beforeEach(async () => {
+    const mock_TokenVerificationGuard: CanActivate = {
+      canActivate: jest.fn(() => true),
+    };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       providers: [
@@ -29,7 +33,10 @@ describe('AppController', () => {
           useValue: jest.fn().mockImplementation(() => true),
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(TokenVerificationGuard)
+      .useValue(mock_TokenVerificationGuard)
+      .compile();
 
     controller = module.get<AppController>(AppController);
     service = module.get<AppService>(AppService);

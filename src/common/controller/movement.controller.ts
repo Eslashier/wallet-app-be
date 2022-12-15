@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { TokenVerificationGuard } from 'src/modules/security/guards/token-verification.guard';
+import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
 import { MovementService } from '../services/movement.service';
 import { MovementEntity } from '../storage/databases/postgresql/entities/movement.entity';
 import { CreateMovementDto } from '../storage/dto/movement/create-movement.dto';
@@ -14,7 +14,7 @@ export class MovementController {
   // }
 
   @Get('/:accountId')
-  // @UseGuards(TokenVerificationGuard)
+  @UseGuards(TokenVerificationGuard)
   async getMovementsById(
     @Param('accountId') accountId: string,
   ): Promise<MovementEntity[]> {
@@ -22,7 +22,7 @@ export class MovementController {
   }
 
   @Post()
-  // @UseGuards(TokenVerificationGuard)
+  @UseGuards(TokenVerificationGuard)
   async createMovement(
     @Body() movement: CreateMovementDto,
   ): Promise<MovementEntity> {

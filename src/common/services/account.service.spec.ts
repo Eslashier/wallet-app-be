@@ -109,7 +109,7 @@ describe('AccountService', () => {
       //Act
       expect(
         service.updateAccount(uuid, {
-          balance: '-30000',
+          balance: '-999999',
           updatedDate: updateDate,
         }),
       ).rejects.toThrow(

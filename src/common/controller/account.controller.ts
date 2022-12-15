@@ -13,7 +13,7 @@ export class AccountController {
   // }
 
   @Get()
-  // @UseGuards(TokenVerificationGuard)
+  @UseGuards(TokenVerificationGuard)
   async getClient(@Param('id') id: string): Promise<AccountEntity> {
     return this.accountService.getAccount(id);
   }

@@ -59,7 +59,6 @@ export class MovementService {
           movement.incomeAccountId,
           updateAccount,
         );
-        await this.movementRepository.save(newMovement);
       } else {
         const incomeAccount = new UpdateAccountDto();
         incomeAccount.balance = newMovement.amount;
@@ -75,9 +74,8 @@ export class MovementService {
           movement.outcomeAccountId,
           outcomeAccount,
         );
-        await this.movementRepository.save(newMovement);
       }
-      return newMovement;
+      return await this.movementRepository.save(newMovement);
     } catch (err) {
       throw new UnprocessableEntityException(err.response);
     }

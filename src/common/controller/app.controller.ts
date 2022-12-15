@@ -14,7 +14,7 @@ export class AppController {
   // }
 
   @Patch('/:id')
-  // @UseGuards(TokenVerificationGuard)
+  @UseGuards(TokenVerificationGuard)
   async updateApp(
     @Param('id') id: string,
     @Body() updateApp: UpdateAppReceiverDto,

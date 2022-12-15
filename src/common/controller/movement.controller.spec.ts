@@ -3,6 +3,8 @@ import { MovementService } from '../services/movement.service';
 import { MovementEntity } from '../storage/databases/postgresql/entities/movement.entity';
 import { CreateMovementDto } from '../storage/dto/movement/create-movement.dto';
 import { MovementController } from './movement.controller';
+import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
+import { CanActivate } from '@nestjs/common';
 
 const testMovementDto: CreateMovementDto = {
   incomeAccountId: 'an uuid',
@@ -31,6 +33,9 @@ describe('MovementController', () => {
   let controller: MovementController;
 
   beforeEach(async () => {
+    const mock_TokenVerificationGuard: CanActivate = {
+      canActivate: jest.fn(() => true),
+    };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MovementController],
       providers: [
@@ -50,7 +55,10 @@ describe('MovementController', () => {
           },
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(TokenVerificationGuard)
+      .useValue(mock_TokenVerificationGuard)
+      .compile();
 
     controller = module.get<MovementController>(MovementController);
   });

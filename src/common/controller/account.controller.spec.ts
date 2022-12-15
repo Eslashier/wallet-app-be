@@ -1,3 +1,4 @@
+import { CanActivate } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
 import { AccountService } from '../services/account.service';
@@ -8,6 +9,10 @@ describe('AccountController', () => {
   let service: AccountService;
 
   beforeEach(async () => {
+    const mock_TokenVerificationGuard: CanActivate = {
+      canActivate: jest.fn(() => true),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AccountController],
       providers: [
@@ -28,12 +33,11 @@ describe('AccountController', () => {
             ),
           },
         },
-        {
-          provide: TokenVerificationGuard,
-          useValue: jest.fn().mockImplementation(() => true),
-        },
       ],
-    }).compile();
+    })
+      .overrideGuard(TokenVerificationGuard)
+      .useValue(mock_TokenVerificationGuard)
+      .compile();
 
     controller = module.get<AccountController>(AccountController);
     service = module.get<AccountService>(AccountService);

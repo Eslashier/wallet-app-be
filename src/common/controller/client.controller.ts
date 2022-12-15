@@ -7,7 +7,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { TokenVerificationGuard } from 'src/modules/security/guards/token-verification.guard';
+import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
 import { AccountIdInterceptor } from '../interceptor/accountId.interceptor';
 import { ClientService } from '../services/client.service';
 import { ClientEntity } from '../storage/databases/postgresql/entities/client.entity';
@@ -30,7 +30,7 @@ export class ClientController {
 
   @UseInterceptors(AccountIdInterceptor)
   @Get('/account/:clientInfo')
-  // @UseGuards(TokenVerificationGuard)
+  @UseGuards(TokenVerificationGuard)
   async findClientAccount(
     @Param('clientInfo') clientInfo: string,
   ): Promise<ClientEntity> {
@@ -38,13 +38,13 @@ export class ClientController {
   }
 
   @Get('/:email')
-  // @UseGuards(TokenVerificationGuard)
+  @UseGuards(TokenVerificationGuard)
   async findClient(@Param('email') email: string): Promise<ClientEntity> {
     return this.clientService.findClient(email);
   }
 
   @Get('/account-exist/:info')
-  // @UseGuards(TokenVerificationGuard)
+  @UseGuards(TokenVerificationGuard)
   async accountExist(@Param('info') info: string): Promise<boolean> {
     return this.clientService.accountExist(info);
   }

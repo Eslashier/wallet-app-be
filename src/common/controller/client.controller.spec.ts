@@ -3,6 +3,8 @@ import { ClientService } from '../services/client.service';
 import { ClientController } from './client.controller';
 import { ClientEntity } from '../storage/databases/postgresql/entities/client.entity';
 import { CreateClientDto } from '../storage/dto/client/create-client.dto';
+import { CanActivate } from '@nestjs/common';
+import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
 
 const testClientDto: CreateClientDto = {
   fullName: 'John Doe',
@@ -19,6 +21,9 @@ describe('ClientController', () => {
   let controller: ClientController;
 
   beforeEach(async () => {
+    const mock_TokenVerificationGuard: CanActivate = {
+      canActivate: jest.fn(() => true),
+    };
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ClientController],
       providers: [
@@ -51,7 +56,10 @@ describe('ClientController', () => {
           },
         },
       ],
-    }).compile();
+    })
+      .overrideGuard(TokenVerificationGuard)
+      .useValue(mock_TokenVerificationGuard)
+      .compile();
 
     controller = module.get<ClientController>(ClientController);
   });

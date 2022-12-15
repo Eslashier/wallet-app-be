@@ -181,7 +181,7 @@ describe('ClientService', () => {
       expect(repoSpy).toBeCalledTimes(1);
     });
   });
-  describe('findClient', () => {
+  describe('findClientAccount', () => {
     it('should return the client if the account exists using email or phone', async () => {
       //Arrange
       const emailOrPhone = 'an email or phone that exists';
@@ -189,18 +189,19 @@ describe('ClientService', () => {
         .spyOn(repositoryMock, 'findOneOrFail')
         .mockResolvedValue(testClient);
       //Act
-      const clientFoundByEmail = service.findClient(emailOrPhone);
+      const clientFoundByEmail = service.findClientAccount(emailOrPhone);
       //Assert
       expect(clientFoundByEmail).resolves.toEqual(testClient);
 
       expect(repoSpy).toHaveBeenCalledWith({
-        where: {
-          email: emailOrPhone,
-        },
-        relations: {
-          app: true,
-          account: true,
-        },
+        where: [
+          {
+            email: emailOrPhone,
+          },
+          {
+            phone: emailOrPhone,
+          },
+        ],
       });
       expect(repoSpy).toBeCalledTimes(1);
     });
@@ -215,22 +216,23 @@ describe('ClientService', () => {
           ),
         );
       //Act
-      const clientFoundByEmail = service.findClient(wrongEmailOrPhone);
+      const clientFoundByEmail = service.findClientAccount(wrongEmailOrPhone);
       //Assert
       expect(clientFoundByEmail).rejects.toEqual(
         new NotFoundException(
-          `The client with the email : ${wrongEmailOrPhone} has been not found`,
+          `The client with the info : ${wrongEmailOrPhone} has been not found`,
         ),
       );
 
       expect(repoSpy).toHaveBeenCalledWith({
-        where: {
-          email: wrongEmailOrPhone,
-        },
-        relations: {
-          app: true,
-          account: true,
-        },
+        where: [
+          {
+            email: wrongEmailOrPhone,
+          },
+          {
+            phone: wrongEmailOrPhone,
+          },
+        ],
       });
       expect(repoSpy).toBeCalledTimes(1);
     });
