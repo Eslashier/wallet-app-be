@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
+import { TokenVerificationGuard } from 'src/modules/security/guards/token-verification.guard';
+// import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
 import { MovementService } from '../services/movement.service';
 import { MovementEntity } from '../storage/databases/postgresql/entities/movement.entity';
 import { CreateMovementDto } from '../storage/dto/movement/create-movement.dto';

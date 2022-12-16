@@ -11,18 +11,18 @@ export class ClientService {
     private readonly clientRepository: Repository<ClientEntity>,
   ) {}
 
-  // async getAll(): Promise<ClientEntity[]> {
-  //   const clients = await this.clientRepository.find({
-  //     relations: {
-  //       app: true,
-  //       account: true,
-  //     },
-  //   });
-  //   if (clients.length === 0) {
-  //     throw new NotFoundException('there is no clients to show');
-  //   }
-  //   return clients;
-  // }
+  async getAll(): Promise<ClientEntity[]> {
+    const clients = await this.clientRepository.find({
+      relations: {
+        app: true,
+        account: true,
+      },
+    });
+    if (clients.length === 0) {
+      throw new NotFoundException('there is no clients to show');
+    }
+    return clients;
+  }
 
   async createClient(client: ClientEntity): Promise<ClientEntity> {
     const newClient = this.clientRepository.create(client);
@@ -41,6 +41,10 @@ export class ClientService {
             phone: clientInfo,
           },
         ],
+        relations: {
+          app: true,
+          account: true,
+        },
       });
       return clientFound;
     } catch (err) {

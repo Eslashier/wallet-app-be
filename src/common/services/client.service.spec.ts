@@ -196,12 +196,16 @@ describe('ClientService', () => {
       expect(repoSpy).toHaveBeenCalledWith({
         where: [
           {
-            email: emailOrPhone,
+            email: clientFoundByEmail,
           },
           {
-            phone: emailOrPhone,
+            phone: clientFoundByEmail,
           },
         ],
+        relations: {
+          app: true,
+          account: true,
+        },
       });
       expect(repoSpy).toBeCalledTimes(1);
     });

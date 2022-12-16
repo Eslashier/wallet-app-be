@@ -75,7 +75,9 @@ export class MovementService {
           outcomeAccount,
         );
       }
-      return await this.movementRepository.save(newMovement);
+      const result = await this.movementRepository.save(newMovement);
+      result.amount = result.amount.toString();
+      return result;
     } catch (err) {
       throw new UnprocessableEntityException(err.response);
     }

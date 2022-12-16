@@ -1,5 +1,6 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
-import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
+import { TokenVerificationGuard } from 'src/modules/security/guards/token-verification.guard';
+// import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
 import { AccountService } from '../services/account.service';
 import { AccountEntity } from '../storage/databases/postgresql/entities/account.entity';
 

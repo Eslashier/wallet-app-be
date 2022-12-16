@@ -7,7 +7,8 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
+// import { TokenVerificationGuard } from '../../../src/modules/security/guards/token-verification.guard';
+import { TokenVerificationGuard } from 'src/modules/security/guards/token-verification.guard';
 import { AccountIdInterceptor } from '../interceptor/accountId.interceptor';
 import { ClientService } from '../services/client.service';
 import { ClientEntity } from '../storage/databases/postgresql/entities/client.entity';
@@ -17,10 +18,10 @@ import { CreateClientDto } from '../storage/dto/client/create-client.dto';
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
-  // @Get()
-  // async getClients(): Promise<ClientEntity[]> {
-  //   return this.clientService.getAll();
-  // }
+  @Get()
+  async getClients(): Promise<ClientEntity[]> {
+    return this.clientService.getAll();
+  }
 
   @Post()
   async createClient(@Body() client: CreateClientDto): Promise<ClientEntity> {
